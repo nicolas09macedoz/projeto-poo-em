@@ -1,0 +1,136 @@
+public class Impressora {
+    private int tipo;
+    private String modelo;
+    private String conexao;
+    private int parametro;
+    private boolean configurada;
+    private boolean conexaoAberta;
+
+    public void configurar(int tipo, String modelo, String conexao, int parametro) {
+        if (conexaoAberta) {
+            System.out.println("Feche a conexão antes de reconfigurar.");
+            return;
+        }
+
+        this.tipo = tipo;
+        this.modelo = modelo;
+        this.conexao = conexao;
+        this.parametro = parametro;
+        configurada = true;
+
+        System.out.println("Conexão configurada.");
+    }
+
+    public void abrirConexao() {
+        if (!configurada) {
+            System.out.println("Configure a conexão antes de abri-la.");
+            return;
+        }
+
+        try {
+            int retorno = ImpressoraDLL.INSTANCE.AbreConexaoImpressora(
+                    tipo, modelo, conexao, parametro
+            );
+
+            if (retorno == 0) {
+                conexaoAberta = true;
+                System.out.println("Conexão aberta.");
+            } else {
+                conexaoAberta = false;
+                System.out.println("Erro ao abrir conexão. Código: " + retorno);
+            }
+        } catch (UnsatisfiedLinkError e) {
+            conexaoAberta = false;
+            System.out.println("Não foi possível carregar a DLL: " + e.getMessage());
+        }
+    }
+
+    public void fecharConexao() {
+        if (!conexaoAberta) {
+            System.out.println("A conexão já está fechada.");
+            return;
+        }
+
+        try {
+            int retorno = ImpressoraDLL.INSTANCE.FechaConexaoImpressora();
+
+            if (retorno == 0) {
+                conexaoAberta = false;
+                System.out.println("Conexão fechada.");
+            } else {
+                System.out.println("Erro ao fechar conexão. Código: " + retorno);
+            }
+        } catch (UnsatisfiedLinkError e) {
+            System.out.println("Não foi possível carregar a DLL: " + e.getMessage());
+        }
+    }
+
+    public boolean isConexaoAberta() {
+        return conexaoAberta;
+    }
+    public void imprimirTexto(String dados, int posicao, int estilo, int tamanho) {
+        if (!conexaoAberta) {
+            System.out.println("Conexão fechada. Abra a conexão antes.");
+            return;
+        }
+
+        try {
+            int retorno = ImpressoraDLL.INSTANCE.ImpressaoTexto(
+                    dados, posicao, estilo, tamanho
+            );
+
+            if (retorno < 0) {
+                System.out.println("Erro ao imprimir texto. Código: " + retorno);
+            } else {
+                System.out.println("Texto enviado. Dados enviados: " + retorno);
+            }
+        } catch (UnsatisfiedLinkError e) {
+            System.out.println("Não foi possível carregar a DLL: " + e.getMessage());
+        }
+    }
+    public void imprimirQRCode(String dados, int tamanho, int nivelCorrecao) {
+        if (!conexaoAberta) {
+            System.out.println("Conexão fechada. Abra a conexão antes.");
+            return;
+        }
+
+        try {
+            int retorno = ImpressoraDLL.INSTANCE.ImpressaoQRCode(
+                    dados, tamanho, nivelCorrecao
+            );
+
+            if (retorno == 0) {
+                System.out.println("QR Code enviado para impressão.");
+            } else {
+                System.out.println("Erro ao imprimir QR Code. Código: " + retorno);
+            }
+        } catch (UnsatisfiedLinkError e) {
+            System.out.println("Não foi possível carregar a DLL: " + e.getMessage());
+        }
+    }
+
+    public void imprimirCodigoBarras(
+            int tipo, String dados, int altura, int largura, int hri
+    ) {
+        if (!conexaoAberta) {
+            System.out.println("Conexão fechada. Abra a conexão antes.");
+            return;
+        }
+
+        try {
+            int retorno = ImpressoraDLL.INSTANCE.ImpressaoCodigoBarras(
+                    tipo, dados, altura, largura, hri
+            );
+
+            if (retorno == 0) {
+                System.out.println("Código de barras enviado para impressão.");
+            } else {
+                System.out.println("Erro ao imprimir código de barras. Código: " + retorno);
+            }
+        } catch (UnsatisfiedLinkError e) {
+            System.out.println("Não foi possível carregar a DLL: " + e.getMessage());
+        }
+    }
+
+
+}
