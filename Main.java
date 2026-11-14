@@ -250,6 +250,6 @@ public class Main {
             return "";
         }
 
-        return xml.substring(inicio, fim).trim();
+        return xml.substring(inicio, fim).replaceAll("\\s", "");
     }
 }
