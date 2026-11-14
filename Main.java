@@ -25,9 +25,7 @@ public class Main {
             }
 
             int restantes = 3 - tentativa;
-            if (restantes > 0) {
-                System.out.println("Dados incorretos. Tentativas restantes: " + restantes);
-            }
+            System.out.println("Dados incorretos. Tentativas restantes: " + restantes);
         }
 
         if (!autenticado) {
