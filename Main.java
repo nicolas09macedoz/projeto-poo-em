@@ -205,16 +205,16 @@ public class Main {
                     }
 
                     try {
-                        String assinatura = obterAssinaturaQRCode();
+                        String assinatura = obterAssinaturaQRCode("CANC_SAT.xml");
                         if (assinatura.isEmpty()) {
-                            System.out.println("Assinatura QRCode não encontrada em XMLSAT.xml.");
+                            System.out.println("Assinatura QRCode não encontrada em CANC_SAT.xml.");
                         } else {
                             impressora.imprimirXMLCancelamentoSAT(
                                     "CANC_SAT.xml", assinatura, 0
                             );
                         }
                     } catch (IOException e) {
-                        System.out.println("Não foi possível ler XMLSAT.xml: " + e.getMessage());
+                        System.out.println("Não foi possível ler CANC_SAT.xml: " + e.getMessage());
                     }
                     break;
 
@@ -233,25 +233,25 @@ public class Main {
         }
     }
 
-    private static String obterAssinaturaQRCode() throws IOException {
-        String xmlVenda = new String(
-                Files.readAllBytes(Paths.get("XMLSAT.xml")),
+    private static String obterAssinaturaQRCode(String caminhoArquivo) throws IOException {
+        String xml = new String(
+                Files.readAllBytes(Paths.get(caminhoArquivo)),
                 StandardCharsets.UTF_8
         );
         String tagInicio = "<assinaturaQRCODE>";
         String tagFim = "</assinaturaQRCODE>";
 
-        int inicio = xmlVenda.indexOf(tagInicio);
+        int inicio = xml.indexOf(tagInicio);
         if (inicio == -1) {
             return "";
         }
 
         inicio += tagInicio.length();
-        int fim = xmlVenda.indexOf(tagFim, inicio);
+        int fim = xml.indexOf(tagFim, inicio);
         if (fim == -1) {
             return "";
         }
 
-        return xmlVenda.substring(inicio, fim).trim();
+        return xml.substring(inicio, fim).trim();
     }
 }
