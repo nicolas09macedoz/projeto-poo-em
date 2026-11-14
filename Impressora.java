@@ -192,4 +192,45 @@ public class Impressora {
             System.out.println("Não foi possível carregar a DLL: " + e.getMessage());
         }
     }
+
+    public void abrirGaveta() {
+        if (!conexaoAberta) {
+            System.out.println("Conexão fechada. Abra a conexão antes.");
+            return;
+        }
+
+        try {
+            // Pino 0 e tempos 1 são valores básicos aceitos pela biblioteca.
+            int retorno = ImpressoraDLL.INSTANCE.AbreGaveta(0, 1, 1);
+
+            if (retorno == 0) {
+                System.out.println("Comando para abrir a gaveta enviado.");
+            } else {
+                System.out.println("Erro ao abrir a gaveta. Código: " + retorno);
+            }
+        } catch (UnsatisfiedLinkError e) {
+            System.out.println("Não foi possível carregar a DLL: " + e.getMessage());
+        }
+    }
+
+    public void sinalSonoro() {
+        if (!conexaoAberta) {
+            System.out.println("Conexão fechada. Abra a conexão antes.");
+            return;
+        }
+
+        try {
+            // 1 sinal com tempos válidos para a impressora.
+            int retorno = ImpressoraDLL.INSTANCE.SinalSonoro(1, 1, 1);
+
+            if (retorno == 0) {
+                System.out.println("Sinal sonoro enviado.");
+            } else {
+                System.out.println("Erro ao emitir sinal sonoro. Código: " + retorno);
+            }
+        } catch (UnsatisfiedLinkError e) {
+            System.out.println("Não foi possível carregar a DLL: " + e.getMessage());
+        }
+    }
+
 }

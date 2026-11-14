@@ -220,7 +220,11 @@ public class Main {
 
                 case 9:
                 case 10:
-                    System.out.println("Essa operação será implementada depois.");
+                    if (opcao == 9) {
+                        impressora.abrirGaveta();
+                    } else {
+                        impressora.sinalSonoro();
+                    }
                     break;
 
                 default:
