@@ -1,3 +1,7 @@
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Scanner;
 
 public class Main {
@@ -151,7 +155,6 @@ public class Main {
                             tipoCodigo = Integer.parseInt(scanner.nextLine());
                         }
 
-
                         System.out.print("Dados do código de barras: ");
                         String dadosCodigo = scanner.nextLine();
 
@@ -163,7 +166,6 @@ public class Main {
                             altura = Integer.parseInt(scanner.nextLine());
                         }
 
-
                         System.out.print("Largura (1 a 6): ");
                         int largura = Integer.parseInt(scanner.nextLine());
                         while (largura < 1 || largura > 6) {
@@ -172,7 +174,6 @@ public class Main {
                             largura = Integer.parseInt(scanner.nextLine());
                         }
 
-
                         System.out.print("HRI (1 acima, 2 abaixo, 3 ambos, 4 nenhum): ");
                         int hri = Integer.parseInt(scanner.nextLine());
                         while (hri < 1 || hri > 4) {
@@ -180,7 +181,6 @@ public class Main {
                             System.out.print("HRI (1 acima, 2 abaixo, 3 ambos, 4 nenhum): ");
                             hri = Integer.parseInt(scanner.nextLine());
                         }
-
 
                         impressora.imprimirCodigoBarras(
                                 tipoCodigo, dadosCodigo, altura, largura, hri
@@ -191,7 +191,33 @@ public class Main {
                     break;
 
                 case 7:
+                    if (!impressora.isConexaoAberta()) {
+                        System.out.println("Conexão fechada. Abra a conexão antes.");
+                        break;
+                    }
+                    impressora.imprimirXMLSAT("XMLSAT.xml", 0);
+                    break;
+
                 case 8:
+                    if (!impressora.isConexaoAberta()) {
+                        System.out.println("Conexão fechada. Abra a conexão antes.");
+                        break;
+                    }
+
+                    try {
+                        String assinatura = obterAssinaturaQRCode();
+                        if (assinatura.isEmpty()) {
+                            System.out.println("Assinatura QRCode não encontrada em XMLSAT.xml.");
+                        } else {
+                            impressora.imprimirXMLCancelamentoSAT(
+                                    "CANC_SAT.xml", assinatura, 0
+                            );
+                        }
+                    } catch (IOException e) {
+                        System.out.println("Não foi possível ler XMLSAT.xml: " + e.getMessage());
+                    }
+                    break;
+
                 case 9:
                 case 10:
                     System.out.println("Essa operação será implementada depois.");
@@ -201,5 +227,27 @@ public class Main {
                     System.out.println("Opção inválida.");
             }
         }
+    }
+
+    private static String obterAssinaturaQRCode() throws IOException {
+        String xmlVenda = new String(
+                Files.readAllBytes(Paths.get("XMLSAT.xml")),
+                StandardCharsets.UTF_8
+        );
+        String tagInicio = "<assinaturaQRCODE>";
+        String tagFim = "</assinaturaQRCODE>";
+
+        int inicio = xmlVenda.indexOf(tagInicio);
+        if (inicio == -1) {
+            return "";
+        }
+
+        inicio += tagInicio.length();
+        int fim = xmlVenda.indexOf(tagFim, inicio);
+        if (fim == -1) {
+            return "";
+        }
+
+        return xmlVenda.substring(inicio, fim).trim();
     }
 }

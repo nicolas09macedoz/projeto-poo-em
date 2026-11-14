@@ -1,3 +1,8 @@
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 public class Impressora {
     private int tipo;
     private String modelo;
@@ -68,6 +73,7 @@ public class Impressora {
     public boolean isConexaoAberta() {
         return conexaoAberta;
     }
+
     public void imprimirTexto(String dados, int posicao, int estilo, int tamanho) {
         if (!conexaoAberta) {
             System.out.println("Conexão fechada. Abra a conexão antes.");
@@ -88,6 +94,7 @@ public class Impressora {
             System.out.println("Não foi possível carregar a DLL: " + e.getMessage());
         }
     }
+
     public void imprimirQRCode(String dados, int tamanho, int nivelCorrecao) {
         if (!conexaoAberta) {
             System.out.println("Conexão fechada. Abra a conexão antes.");
@@ -132,5 +139,57 @@ public class Impressora {
         }
     }
 
+    public void imprimirXMLSAT(String caminho, int parametro) {
+        if (!conexaoAberta) {
+            System.out.println("Conexão fechada. Abra a conexão antes.");
+            return;
+        }
 
+        try {
+            String dados = new String(
+                    Files.readAllBytes(Paths.get(caminho)),
+                    StandardCharsets.UTF_8
+            );
+            int retorno = ImpressoraDLL.INSTANCE.ImprimeXMLSAT(dados, parametro);
+
+            if (retorno == 0) {
+                System.out.println("XML SAT enviado para impressão.");
+            } else {
+                System.out.println("Erro ao imprimir XML SAT. Código: " + retorno);
+            }
+        } catch (IOException e) {
+            System.out.println("Não foi possível ler o arquivo XML: " + e.getMessage());
+        } catch (UnsatisfiedLinkError e) {
+            System.out.println("Não foi possível carregar a DLL: " + e.getMessage());
+        }
+    }
+
+    public void imprimirXMLCancelamentoSAT(
+            String caminho, String assQRCode, int parametro
+    ) {
+        if (!conexaoAberta) {
+            System.out.println("Conexão fechada. Abra a conexão antes.");
+            return;
+        }
+
+        try {
+            String dados = new String(
+                    Files.readAllBytes(Paths.get(caminho)),
+                    StandardCharsets.UTF_8
+            );
+            int retorno = ImpressoraDLL.INSTANCE.ImprimeXMLCancelamentoSAT(
+                    dados, assQRCode, parametro
+            );
+
+            if (retorno == 0) {
+                System.out.println("XML de cancelamento SAT enviado para impressão.");
+            } else {
+                System.out.println("Erro ao imprimir cancelamento SAT. Código: " + retorno);
+            }
+        } catch (IOException e) {
+            System.out.println("Não foi possível ler o arquivo XML: " + e.getMessage());
+        } catch (UnsatisfiedLinkError e) {
+            System.out.println("Não foi possível carregar a DLL: " + e.getMessage());
+        }
+    }
 }
