@@ -37,7 +37,7 @@ public class Main {
 
         while (opcao != 0) {
             System.out.println("\n=== MENU DA IMPRESSORA ===");
-            System.out.println("1. Configurar conexão");
+            System.out.println("1. Configurar conexão padrão (USB - Elgin i9)");
             System.out.println("2. Abrir conexão");
             System.out.println("3. Fechar conexão");
             System.out.println("4. Imprimir texto");
@@ -47,6 +47,7 @@ public class Main {
             System.out.println("8. Imprimir XML de cancelamento SAT");
             System.out.println("9. Abrir gaveta");
             System.out.println("10. Sinal sonoro");
+            System.out.println("11. Cortar papel");
             System.out.println("0. Sair");
             System.out.print("Escolha uma opção: ");
 
@@ -63,23 +64,7 @@ public class Main {
                     break;
 
                 case 1:
-                    try {
-                        System.out.print("Tipo (1 USB, 2 serial, 3 rede, 4 Bluetooth): ");
-                        int tipo = Integer.parseInt(scanner.nextLine());
-
-                        System.out.print("Modelo (i8 ou i9): ");
-                        String modelo = scanner.nextLine();
-
-                        System.out.print("Conexão (USB, COM2 ou IP): ");
-                        String conexao = scanner.nextLine();
-
-                        System.out.print("Parâmetro: ");
-                        int parametro = Integer.parseInt(scanner.nextLine());
-
-                        impressora.configurar(tipo, modelo, conexao, parametro);
-                    } catch (NumberFormatException e) {
-                        System.out.println("Tipo e parâmetro precisam ser números.");
-                    }
+                    impressora.configurar();
                     break;
 
                 case 2:
@@ -96,23 +81,9 @@ public class Main {
                         break;
                     }
 
-                    try {
-                        System.out.print("Texto: ");
-                        String dados = scanner.nextLine();
-
-                        System.out.print("Posição (0 esquerda, 1 centro, 2 direita): ");
-                        int posicao = Integer.parseInt(scanner.nextLine());
-
-                        System.out.print("Estilo (0, 1, 2, 4, 8 ou soma deles): ");
-                        int estilo = Integer.parseInt(scanner.nextLine());
-
-                        System.out.print("Tamanho (0 a 7): ");
-                        int tamanho = Integer.parseInt(scanner.nextLine());
-
-                        impressora.imprimirTexto(dados, posicao, estilo, tamanho);
-                    } catch (NumberFormatException e) {
-                        System.out.println("Posição, estilo e tamanho precisam ser números.");
-                    }
+                    System.out.print("Texto: ");
+                    String texto = scanner.nextLine();
+                    impressora.imprimirTexto(texto, 1, 4, 0);
                     break;
 
                 case 5:
@@ -121,20 +92,9 @@ public class Main {
                         break;
                     }
 
-                    try {
-                        System.out.print("Conteúdo do QR Code: ");
-                        String dados = scanner.nextLine();
-
-                        System.out.print("Tamanho (1 a 6): ");
-                        int tamanho = Integer.parseInt(scanner.nextLine());
-
-                        System.out.print("Nível de correção (1 a 4): ");
-                        int nivelCorrecao = Integer.parseInt(scanner.nextLine());
-
-                        impressora.imprimirQRCode(dados, tamanho, nivelCorrecao);
-                    } catch (NumberFormatException e) {
-                        System.out.println("Tamanho e nível de correção precisam ser números.");
-                    }
+                    System.out.print("Conteúdo do QR Code: ");
+                    String dadosQRCode = scanner.nextLine();
+                    impressora.imprimirQRCode(dadosQRCode, 6, 4);
                     break;
 
                 case 6:
@@ -143,49 +103,9 @@ public class Main {
                         break;
                     }
 
-                    try {
-                        System.out.print("Tipo (0 UPC-A, 2 EAN13, 3 EAN8, 4 CODE39, 8 CODE128): ");
-                        int tipoCodigo = Integer.parseInt(scanner.nextLine());
-                        while (tipoCodigo != 0 && tipoCodigo != 2 && tipoCodigo != 3
-                                && tipoCodigo != 4 && tipoCodigo != 8) {
-                            System.out.println("Tipo inválido. Digite 0, 2, 3, 4 ou 8.");
-                            System.out.print("Tipo (0 UPC-A, 2 EAN13, 3 EAN8, 4 CODE39, 8 CODE128): ");
-                            tipoCodigo = Integer.parseInt(scanner.nextLine());
-                        }
-
-                        System.out.print("Dados do código de barras: ");
-                        String dadosCodigo = scanner.nextLine();
-
-                        System.out.print("Altura (1 a 255): ");
-                        int altura = Integer.parseInt(scanner.nextLine());
-                        while (altura < 1 || altura > 255) {
-                            System.out.println("Altura inválida. Digite um valor entre 1 e 255.");
-                            System.out.print("Altura (1 a 255): ");
-                            altura = Integer.parseInt(scanner.nextLine());
-                        }
-
-                        System.out.print("Largura (1 a 6): ");
-                        int largura = Integer.parseInt(scanner.nextLine());
-                        while (largura < 1 || largura > 6) {
-                            System.out.println("Largura inválida. Digite um valor entre 1 e 6.");
-                            System.out.print("Largura (1 a 6): ");
-                            largura = Integer.parseInt(scanner.nextLine());
-                        }
-
-                        System.out.print("HRI (1 acima, 2 abaixo, 3 ambos, 4 nenhum): ");
-                        int hri = Integer.parseInt(scanner.nextLine());
-                        while (hri < 1 || hri > 4) {
-                            System.out.println("HRI inválido. Digite 1, 2, 3 ou 4.");
-                            System.out.print("HRI (1 acima, 2 abaixo, 3 ambos, 4 nenhum): ");
-                            hri = Integer.parseInt(scanner.nextLine());
-                        }
-
-                        impressora.imprimirCodigoBarras(
-                                tipoCodigo, dadosCodigo, altura, largura, hri
-                        );
-                    } catch (NumberFormatException e) {
-                        System.out.println("Tipo, altura, largura e HRI precisam ser números.");
-                    }
+                    System.out.print("Dados do código de barras: ");
+                    String dadosCodigo = scanner.nextLine();
+                    impressora.imprimirCodigoBarras(8, dadosCodigo, 100, 2, 3);
                     break;
 
                 case 7:
@@ -223,6 +143,10 @@ public class Main {
                     } else {
                         impressora.sinalSonoro();
                     }
+                    break;
+
+                case 11:
+                    impressora.cortarPapel();
                     break;
 
                 default:

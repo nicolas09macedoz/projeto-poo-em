@@ -11,19 +11,19 @@ public class Impressora {
     private boolean configurada;
     private boolean conexaoAberta;
 
-    public void configurar(int tipo, String modelo, String conexao, int parametro) {
+    public void configurar() {
         if (conexaoAberta) {
             System.out.println("Feche a conexão antes de reconfigurar.");
             return;
         }
 
-        this.tipo = tipo;
-        this.modelo = modelo;
-        this.conexao = conexao;
-        this.parametro = parametro;
+        tipo = 1;
+        modelo = "i9";
+        conexao = "USB";
+        parametro = 0;
         configurada = true;
 
-        System.out.println("Conexão configurada.");
+        System.out.println("Conexão USB configurada para impressora Elgin i9.");
     }
 
     public void abrirConexao() {
@@ -227,6 +227,25 @@ public class Impressora {
                 System.out.println("Sinal sonoro enviado.");
             } else {
                 System.out.println("Erro ao emitir sinal sonoro. Código: " + retorno);
+            }
+        } catch (UnsatisfiedLinkError e) {
+            System.out.println("Não foi possível carregar a DLL: " + e.getMessage());
+        }
+    }
+
+    public void cortarPapel() {
+        if (!conexaoAberta) {
+            System.out.println("Conexão fechada. Abra a conexão antes.");
+            return;
+        }
+
+        try {
+            int retorno = ImpressoraDLL.INSTANCE.Corte(5);
+
+            if (retorno == 0) {
+                System.out.println("Papel cortado.");
+            } else {
+                System.out.println("Erro ao cortar o papel. Código: " + retorno);
             }
         } catch (UnsatisfiedLinkError e) {
             System.out.println("Não foi possível carregar a DLL: " + e.getMessage());
