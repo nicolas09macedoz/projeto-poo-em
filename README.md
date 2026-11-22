@@ -1,5 +1,4 @@
 # 🖨️ Sistema de Controle de Impressora Elgin
-### *(Troque pelo nome do seu projeto)*
 ---
 
 ## 📘 Sobre o Projeto
