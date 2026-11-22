@@ -60,6 +60,7 @@ Teste das funções de impressão disponíveis no sistema.
 "Documentação do SDK E1" (https://github.com/ElginDeveloperCommunity/Impressoras)
 
 
+
 -👥 Autores
 Matheus Klayver
 Matheus Teixeira
