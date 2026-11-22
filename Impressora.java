@@ -200,7 +200,7 @@ public class Impressora {
         }
 
         try {
-            // Pino 0 e tempos 1 são valores básicos aceitos pela biblioteca.
+
             int retorno = ImpressoraDLL.INSTANCE.AbreGaveta(0, 1, 1);
 
             if (retorno == 0) {
@@ -220,7 +220,7 @@ public class Impressora {
         }
 
         try {
-            // 1 sinal com tempos válidos para a impressora.
+
             int retorno = ImpressoraDLL.INSTANCE.SinalSonoro(1, 1, 1);
 
             if (retorno == 0) {
