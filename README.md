@@ -3,7 +3,7 @@
 
 ## 📘 Sobre o Projeto
 
-Desenvolvido por Matheus Teixeira, Matheus Klayver, Nicolas Henrique e Yago Jesus para a disciplina de Programação Orientada a Objetos, este projeto consiste em um sistema em Java voltado ao controle de uma impressora térmica Elgin. Por meio da biblioteca JNA, a aplicação estabelece comunicação com a DLL do equipamento para executar diversas funcionalidades de impressão, colocando em prática os conceitos da linguagem e a integração com dispositivos externos.
+Desenvolvido por 21CTI para a disciplina de Programação Orientada a Objetos, este projeto consiste em um sistema em Java voltado ao controle de uma impressora térmica Elgin. Por meio da biblioteca JNA, a aplicação estabelece comunicação com a DLL do equipamento para executar diversas funcionalidades de impressão, colocando em prática os conceitos da linguagem e a integração com dispositivos externos.
 
 ---
 
