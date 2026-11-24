@@ -1,5 +1,6 @@
 public class Main {
     private static final String CODIGO_BARRAS_PADRAO = "012345678912";
+    private static final int LINHAS_AVANCO_PADRAO = 4;
 
     public static void main(String[] args) {
         Usuario usuario = new Usuario("admin", "1234");
@@ -46,7 +47,9 @@ public class Main {
                 case 8 -> {
                     if (impressora.verificarConexao()) {
                         String arquivo = Entrada.lerTexto("Arquivo XML (Enter = CANC_SAT.xml): ");
-                        impressora.imprimirXmlCancelamento(arquivo.isBlank() ? "CANC_SAT.xml" : arquivo);
+                        impressora.imprimirXmlCancelamento(
+                                arquivo.isBlank() ? "CANC_SAT.xml" : arquivo
+                        );
                     }
                 }
                 case 9 -> {
@@ -62,8 +65,7 @@ public class Main {
                 }
                 case 11 -> {
                     if (impressora.verificarConexao()) {
-                        int linhas = Entrada.lerInteiro("Quantas linhas (1 a 10)? ", 1, 10);
-                        impressora.avancarPapel(linhas);
+                        impressora.avancarPapel(LINHAS_AVANCO_PADRAO);
                     }
                 }
                 case 12 -> {
@@ -90,7 +92,7 @@ public class Main {
         System.out.println("8  - Imprimir XML de cancelamento SAT");
         System.out.println("9  - Abrir gaveta");
         System.out.println("10 - Sinal sonoro");
-        System.out.println("11 - Avançar papel");
+        System.out.println("11 - Avançar papel (4 linhas)");
         System.out.println("12 - Status do papel");
         System.out.println("0  - Sair");
     }
@@ -106,7 +108,9 @@ public class Main {
             }
             int restantes = MAX_TENTATIVAS - tentativa;
             if (restantes > 0) {
-                System.out.println("Usuário ou senha incorretos. Tentativas restantes: " + restantes);
+                System.out.println(
+                        "Usuário ou senha incorretos. Tentativas restantes: " + restantes
+                );
             }
         }
         System.out.println("Número máximo de tentativas atingido. Encerrando.");
