@@ -1,179 +1,115 @@
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.Scanner;
-
 public class Main {
+    private static final String CODIGO_BARRAS_PADRAO = "012345678912";
+
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
         Usuario usuario = new Usuario("admin", "1234");
         Impressora impressora = new Impressora();
-        boolean autenticado = false;
 
-        for (int tentativa = 1; tentativa <= 3; tentativa++) {
-            System.out.print("Usuário: ");
-            String login = scanner.nextLine();
-
-            System.out.print("Senha: ");
-            String senha = scanner.nextLine();
-
-            if (usuario.autenticar(login, senha)) {
-                System.out.println("Acesso autorizado.");
-                autenticado = true;
-                break;
-            }
-
-            int restantes = 3 - tentativa;
-            System.out.println("Dados incorretos. Tentativas restantes: " + restantes);
-        }
-
-        if (!autenticado) {
-            System.out.println("Acesso bloqueado.");
+        if (!fazerLogin(usuario)) {
             return;
         }
 
-        int opcao = -1;
-
-        while (opcao != 0) {
-            System.out.println("\n=== MENU DA IMPRESSORA ===");
-            System.out.println("1. Configurar conexão padrão (USB - Elgin i9)");
-            System.out.println("2. Abrir conexão");
-            System.out.println("3. Fechar conexão");
-            System.out.println("4. Imprimir texto");
-            System.out.println("5. Imprimir QR Code");
-            System.out.println("6. Imprimir código de barras");
-            System.out.println("7. Imprimir XML SAT");
-            System.out.println("8. Imprimir XML de cancelamento SAT");
-            System.out.println("9. Abrir gaveta");
-            System.out.println("10. Sinal sonoro");
-            System.out.println("11. Cortar papel");
-            System.out.println("0. Sair");
-            System.out.print("Escolha uma opção: ");
-
-            try {
-                opcao = Integer.parseInt(scanner.nextLine());
-            } catch (NumberFormatException e) {
-                System.out.println("Digite um número válido.");
-                continue;
-            }
-
+        int opcao;
+        do {
+            mostrarMenu();
+            opcao = Entrada.lerInteiro("Escolha uma opção: ", 0, 12);
             switch (opcao) {
-                case 0:
-                    System.out.println("Programa encerrado.");
-                    break;
-
-                case 1:
-                    impressora.configurar();
-                    break;
-
-                case 2:
-                    impressora.abrirConexao();
-                    break;
-
-                case 3:
-                    impressora.fecharConexao();
-                    break;
-
-                case 4:
-                    if (!impressora.isConexaoAberta()) {
-                        System.out.println("Conexão fechada. Abra a conexão antes.");
-                        break;
+                case 1 -> impressora.configurarConexao();
+                case 2 -> impressora.abrirConexao();
+                case 3 -> impressora.fecharConexao();
+                case 4 -> {
+                    if (impressora.verificarConexao()) {
+                        String texto = Entrada.lerTexto("Texto a imprimir: ");
+                        int copias = Entrada.lerInteiro("Quantas cópias (1 a 5)? ", 1, 5);
+                        impressora.imprimirTexto(texto, copias);
                     }
-
-                    System.out.print("Texto: ");
-                    String texto = scanner.nextLine();
-                    impressora.imprimirTexto(texto, 1, 4, 0);
-                    break;
-
-                case 5:
-                    if (!impressora.isConexaoAberta()) {
-                        System.out.println("Conexão fechada. Abra a conexão antes.");
-                        break;
+                }
+                case 5 -> {
+                    if (impressora.verificarConexao()) {
+                        String dados = Entrada.lerTexto("Conteúdo do QR Code: ");
+                        int tamanho = Entrada.lerInteiro("Tamanho (1 a 6): ", 1, 6);
+                        impressora.imprimirQRCode(dados, tamanho);
                     }
-
-                    System.out.print("Conteúdo do QR Code: ");
-                    String dadosQRCode = scanner.nextLine();
-                    impressora.imprimirQRCode(dadosQRCode, 6, 4);
-                    break;
-
-                case 6:
-                    if (!impressora.isConexaoAberta()) {
-                        System.out.println("Conexão fechada. Abra a conexão antes.");
-                        break;
+                }
+                case 6 -> {
+                    if (impressora.verificarConexao()) {
+                        System.out.println("Código utilizado: " + CODIGO_BARRAS_PADRAO);
+                        impressora.imprimirCodigoBarras(8, CODIGO_BARRAS_PADRAO);
                     }
-
-                    System.out.print("Dados do código de barras: ");
-                    String dadosCodigo = scanner.nextLine();
-                    impressora.imprimirCodigoBarras(8, dadosCodigo, 100, 2, 3);
-                    break;
-
-                case 7:
-                    if (!impressora.isConexaoAberta()) {
-                        System.out.println("Conexão fechada. Abra a conexão antes.");
-                        break;
+                }
+                case 7 -> {
+                    if (impressora.verificarConexao()) {
+                        String arquivo = Entrada.lerTexto("Arquivo XML (Enter = XMLSAT.xml): ");
+                        impressora.imprimirXmlSat(arquivo.isBlank() ? "XMLSAT.xml" : arquivo);
                     }
-                    impressora.imprimirXMLSAT("XMLSAT.xml", 0);
-                    break;
-
-                case 8:
-                    if (!impressora.isConexaoAberta()) {
-                        System.out.println("Conexão fechada. Abra a conexão antes.");
-                        break;
+                }
+                case 8 -> {
+                    if (impressora.verificarConexao()) {
+                        String arquivo = Entrada.lerTexto("Arquivo XML (Enter = CANC_SAT.xml): ");
+                        impressora.imprimirXmlCancelamento(arquivo.isBlank() ? "CANC_SAT.xml" : arquivo);
                     }
-
-                    try {
-                        String assinatura = obterAssinaturaQRCode("CANC_SAT.xml");
-                        if (assinatura.isEmpty()) {
-                            System.out.println("Assinatura QRCode não encontrada em CANC_SAT.xml.");
-                        } else {
-                            impressora.imprimirXMLCancelamentoSAT(
-                                    "CANC_SAT.xml", assinatura, 0
-                            );
-                        }
-                    } catch (IOException e) {
-                        System.out.println("Não foi possível ler CANC_SAT.xml: " + e.getMessage());
-                    }
-                    break;
-
-                case 9:
-                case 10:
-                    if (opcao == 9) {
+                }
+                case 9 -> {
+                    if (impressora.verificarConexao()) {
                         impressora.abrirGaveta();
-                    } else {
-                        impressora.sinalSonoro();
                     }
-                    break;
-
-                case 11:
-                    impressora.cortarPapel();
-                    break;
-
-                default:
-                    System.out.println("Opção inválida.");
+                }
+                case 10 -> {
+                    if (impressora.verificarConexao()) {
+                        int qtd = Entrada.lerInteiro("Quantos bips (1 a 63)? ", 1, 63);
+                        impressora.sinalSonoro(qtd);
+                    }
+                }
+                case 11 -> {
+                    if (impressora.verificarConexao()) {
+                        int linhas = Entrada.lerInteiro("Quantas linhas (1 a 10)? ", 1, 10);
+                        impressora.avancarPapel(linhas);
+                    }
+                }
+                case 12 -> {
+                    if (impressora.verificarConexao()) {
+                        impressora.verificarPapel();
+                    }
+                }
+                case 0 -> System.out.println("Saindo...");
             }
-        }
+        } while (opcao != 0);
+
+        impressora.fecharConexao();
     }
 
-    private static String obterAssinaturaQRCode(String caminhoArquivo) throws IOException {
-        String xml = new String(
-                Files.readAllBytes(Paths.get(caminhoArquivo)),
-                StandardCharsets.UTF_8
-        );
-        String tagInicio = "<assinaturaQRCODE>";
-        String tagFim = "</assinaturaQRCODE>";
+    static void mostrarMenu() {
+        System.out.println("\n===== MENU IMPRESSORA ELGIN =====");
+        System.out.println("1  - Configuração padrão USB / Elgin i9");
+        System.out.println("2  - Abrir conexão");
+        System.out.println("3  - Fechar conexão");
+        System.out.println("4  - Imprimir texto");
+        System.out.println("5  - Imprimir QR Code");
+        System.out.println("6  - Imprimir código de barras padrão");
+        System.out.println("7  - Imprimir XML SAT");
+        System.out.println("8  - Imprimir XML de cancelamento SAT");
+        System.out.println("9  - Abrir gaveta");
+        System.out.println("10 - Sinal sonoro");
+        System.out.println("11 - Avançar papel");
+        System.out.println("12 - Status do papel");
+        System.out.println("0  - Sair");
+    }
 
-        int inicio = xml.indexOf(tagInicio);
-        if (inicio == -1) {
-            return "";
+    static boolean fazerLogin(Usuario usuario) {
+        final int MAX_TENTATIVAS = 3;
+        for (int tentativa = 1; tentativa <= MAX_TENTATIVAS; tentativa++) {
+            String login = Entrada.lerTexto("Usuário: ");
+            String senha = Entrada.lerTexto("Senha: ");
+            if (usuario.autenticar(login, senha)) {
+                System.out.println("Login realizado com sucesso!");
+                return true;
+            }
+            int restantes = MAX_TENTATIVAS - tentativa;
+            if (restantes > 0) {
+                System.out.println("Usuário ou senha incorretos. Tentativas restantes: " + restantes);
+            }
         }
-
-        inicio += tagInicio.length();
-        int fim = xml.indexOf(tagFim, inicio);
-        if (fim == -1) {
-            return "";
-        }
-
-        return xml.substring(inicio, fim).replaceAll("\\s", "");
+        System.out.println("Número máximo de tentativas atingido. Encerrando.");
+        return false;
     }
 }
