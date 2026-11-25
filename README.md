@@ -96,5 +96,5 @@ Tentativas:3
 
 - Matheus Klayver Soares Silva
 - Matheus Teixeira dos Santos
-- Nicolas Henrique
+- Nicolas Henrique de Macedo
 - Yago Oliveira de Jesus Lima
