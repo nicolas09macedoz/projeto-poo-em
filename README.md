@@ -31,6 +31,7 @@ Main.java                → Inicia o programa
 
 ---
 
+
 ## ⚙️ Instalação e Execução
 
 
@@ -93,4 +94,4 @@ Tentativas:3
 - Matheus Klayver
 - Matheus Teixeira
 - Nicolas Henrique
-- Yago Jesus
+- Yago Oliveira de Jesus Lima
