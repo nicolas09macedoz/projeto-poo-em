@@ -52,7 +52,9 @@ Main.java                → Inicia o programa
 ## 🔐 Login
 
 Usuario:admin
+
 Senha:1234
+
 Tentativas:3
 
 ---
