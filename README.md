@@ -92,6 +92,6 @@ Tentativas:3
 ## 👥 Autores
 
 - Matheus Klayver
-- Matheus Teixeira
+- Matheus Teixeira dos Santos
 - Nicolas Henrique
 - Yago Oliveira de Jesus Lima
