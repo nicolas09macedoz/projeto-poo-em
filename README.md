@@ -72,7 +72,7 @@ Tentativas:3
 | 9 | *Abrir a gaveta* |
 | 10 | *Sinal Sonoro* |
 | 11 | *Avançar papel (4 linhas)* |
-| 11 | *Status do Papel* |
+| 12 | *Status do Papel* |
 | 0 | *Sair* |
 
 ---
