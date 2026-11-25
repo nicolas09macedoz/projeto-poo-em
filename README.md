@@ -3,7 +3,7 @@
 
 ## 📘 Sobre o Projeto
 
-Desenvolvido por 21CTI para a disciplina de Programação Orientada a Objetos, este projeto consiste em um sistema em Java voltado ao controle de uma impressora térmica Elgin. Por meio da biblioteca JNA, a aplicação estabelece comunicação com a DLL do equipamento para executar diversas funcionalidades de impressão, colocando em prática os conceitos da linguagem e a integração com dispositivos externos.
+Desenvolvido pela turma 21CTI para a disciplina de Programação Orientada a Objetos, este projeto consiste em um sistema em Java voltado ao controle de uma impressora térmica Elgin. Por meio da biblioteca JNA, a aplicação estabelece comunicação com a DLL do equipamento para executar diversas funcionalidades de impressão, colocando em prática os conceitos da linguagem e a integração com dispositivos externos.
 
 ---
 
@@ -71,7 +71,8 @@ Tentativas:3
 | 8 | *Imprimir XML de cancelamento SAT* |
 | 9 | *Abrir a gaveta* |
 | 10 | *Sinal Sonoro* |
-| 11 | *Cortar papel* |
+| 11 | *Avançar papel (4 linhas)* |
+| 11 | *Status do Papel* |
 | 0 | *Sair* |
 
 ---
